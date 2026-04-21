@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "787078460532",
+    "project_id": "inovafin-68212",
+    "storage_bucket": "inovafin-68212.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:787078460532:android:01274600ce8a0fa1688d21",
+        "android_client_info": {
+          "package_name": "com.inovafin.estudiantil"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfxTSohk9pygpkLY2gUkz8Hvk5HnNV4Io"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
