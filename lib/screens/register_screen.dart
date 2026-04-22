@@ -1,38 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:inovafin/services/auth_service.dart';
 import 'package:inovafin/screens/dashboard_screen.dart';
-import 'package:inovafin/screens/register_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _nombreController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   bool _isLoading = false;
   bool _obscurePassword = true;
   final AuthService _authService = AuthService();
 
   @override
   void dispose() {
+    _nombreController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  void _login() async {
-    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+  void _register() async {
+    if (_nombreController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _passwordController.text.isEmpty ||
+        _confirmPasswordController.text.isEmpty) {
       _showError('Por favor completa todos los campos.');
+      return;
+    }
+
+    if (_passwordController.text != _confirmPasswordController.text) {
+      _showError('Las contraseñas no coinciden.');
+      return;
+    }
+
+    if (_passwordController.text.length < 6) {
+      _showError('La contraseña debe tener al menos 6 caracteres.');
       return;
     }
 
     setState(() => _isLoading = true);
 
-    final error = await _authService.login(
+    final error = await _authService.register(
       _emailController.text,
       _passwordController.text,
     );
@@ -63,12 +79,14 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 32.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 40),
+              // Logo
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -98,9 +116,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 48),
+              const SizedBox(height: 32),
               const Text(
-                'Bienvenido',
+                'Crear cuenta',
                 style: TextStyle(
                   color: Color(0xFF0D47A1),
                   fontSize: 24,
@@ -108,12 +126,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 20),
+              // Nombre
+              TextField(
+                controller: _nombreController,
+                decoration: const InputDecoration(hintText: 'Nombre completo'),
+              ),
+              const SizedBox(height: 16),
+              // Email
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(hintText: 'Email'),
               ),
               const SizedBox(height: 16),
+              // Contraseña
               TextField(
                 controller: _passwordController,
                 obscureText: _obscurePassword,
@@ -132,38 +158,36 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
+              const SizedBox(height: 16),
+              // Confirmar contraseña
+              TextField(
+                controller: _confirmPasswordController,
+                obscureText: _obscurePassword,
+                decoration: const InputDecoration(
+                  hintText: 'Confirmar contraseña',
+                ),
+              ),
               const SizedBox(height: 24),
+              // Botón Registrar
               _isLoading
                   ? const Center(
                       child: CircularProgressIndicator(color: Colors.white))
                   : ElevatedButton(
-                      onPressed: _login,
-                      child: const Text('Iniciar sesión'),
+                      onPressed: _register,
+                      child: const Text('Registrarse'),
                     ),
               const SizedBox(height: 16),
+              // ¿Ya tienes cuenta?
               Center(
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () => Navigator.pop(context),
                   child: const Text(
-                    '¿Olvidaste tu contraseña?',
-                    style: TextStyle(color: Colors.white70),
-                  ),
-                ),
-              ),
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                  Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const RegisterScreen()),
-                                  );
-                                  },
-                  child: const Text(
-                    '¿No tienes una cuenta? Regístrate',
+                    '¿Ya tienes una cuenta? Inicia sesión',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
