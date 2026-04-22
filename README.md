@@ -1,7 +1,7 @@
 # INOVAFIN - Sistema de Punto de Venta
 
 ## Descripción General
-Inovafin es un proyecto innovador diseñado para la gestión financiera y control de ventas. Este sistema permite administrar transacciones de manera eficiente, ofreciendo una interfaz intuitiva para el usuario final. Desarrollado como parte de la materia de Programación Orientada a Objetos.
+Inovafin es un proyecto innovador diseñado para la gestión financiera. Este sistema permite administrar transacciones de manera eficiente, ofreciendo una interfaz intuitiva para el usuario final. Desarrollado como parte de la materia de Programación Orientada a Objetos.
 
 ## Tecnologías Utilizadas
 * **Lenguaje:** Dart

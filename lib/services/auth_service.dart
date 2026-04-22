@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:inovafin/services/db_service.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -34,26 +35,32 @@ class AuthService {
   }
 
   // Registro con email y contraseña
-  Future<String?> register(String email, String password) async {
-    try {
-      await _auth.createUserWithEmailAndPassword(
-        email: email.trim(),
-        password: password.trim(),
-      );
-      return null; // null = éxito
-    } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case 'email-already-in-use':
-          return 'Ya existe una cuenta con ese correo.';
-        case 'weak-password':
-          return 'La contraseña debe tener al menos 6 caracteres.';
-        case 'invalid-email':
-          return 'El correo no es válido.';
-        default:
-          return 'Error al registrarse. Intenta de nuevo.';
-      }
+Future<String?> register(String nombre, String email, String password) async {
+  try {
+    final resultado = await _auth.createUserWithEmailAndPassword(
+      email: email.trim(),
+      password: password.trim(),
+    );
+    // Guardar datos en Firestore
+    await DbService().crearEstudiante(
+      uid: resultado.user!.uid,
+      nombre: nombre,
+      correo: email.trim(),
+    );
+    return null;
+  } on FirebaseAuthException catch (e) {
+    switch (e.code) {
+      case 'email-already-in-use':
+        return 'Ya existe una cuenta con ese correo.';
+      case 'weak-password':
+        return 'La contraseña debe tener al menos 6 caracteres.';
+      case 'invalid-email':
+        return 'El correo no es válido.';
+      default:
+        return 'Error al registrarse. Intenta de nuevo.';
     }
   }
+}
 
   // Cerrar sesión
   Future<void> logout() async {
