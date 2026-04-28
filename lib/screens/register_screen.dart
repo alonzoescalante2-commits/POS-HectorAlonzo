@@ -14,6 +14,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _saldoController = TextEditingController();
   bool _isLoading = false;
   bool _obscurePassword = true;
   final AuthService _authService = AuthService();
@@ -24,6 +25,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _saldoController.dispose();
     super.dispose();
   }
 
@@ -48,10 +50,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     setState(() => _isLoading = true);
 
-    final error = await _authService.register(
+    final saldoInicial = double.tryParse(_saldoController.text) ?? 0.0;
+
+final error = await _authService.register(
   _nombreController.text,
   _emailController.text,
   _passwordController.text,
+  saldoInicial,
 );
 
     setState(() => _isLoading = false);
@@ -160,12 +165,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              // Confirmar contraseña
+              // Saldo inicial
               TextField(
-                controller: _confirmPasswordController,
-                obscureText: _obscurePassword,
-                decoration: const InputDecoration(
-                  hintText: 'Confirmar contraseña',
+              controller: _saldoController,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(
+              hintText: 'Saldo inicial (\$)',
+              filled: true,
+              fillColor: const Color(0xFFF5F0E8),
+              prefixIcon: const Icon(Icons.attach_money, color: Color(0xFF29B6F6)),
+              border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+                  ),
                 ),
               ),
               const SizedBox(height: 24),

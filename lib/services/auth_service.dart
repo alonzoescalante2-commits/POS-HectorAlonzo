@@ -35,17 +35,17 @@ class AuthService {
   }
 
   // Registro con email y contraseña
-Future<String?> register(String nombre, String email, String password) async {
+Future<String?> register(String nombre, String email, String password, double saldoInicial) async {
   try {
     final resultado = await _auth.createUserWithEmailAndPassword(
       email: email.trim(),
       password: password.trim(),
     );
-    // Guardar datos en Firestore
     await DbService().crearEstudiante(
       uid: resultado.user!.uid,
       nombre: nombre,
       correo: email.trim(),
+      saldoInicial: saldoInicial,
     );
     return null;
   } on FirebaseAuthException catch (e) {

@@ -5,17 +5,18 @@ class DbService {
 
   // Crear perfil del estudiante al registrarse
   Future<void> crearEstudiante({
-    required String uid,
-    required String nombre,
-    required String correo,
-  }) async {
-    await _db.collection('users').doc(uid).set({
-      'nombre': nombre,
-      'correo': correo,
-      'saldo_total': 0.0,
-      'fecha_creacion': FieldValue.serverTimestamp(),
-    });
-  }
+  required String uid,
+  required String nombre,
+  required String correo,
+  double saldoInicial = 0.0,
+}) async {
+  await _db.collection('users').doc(uid).set({
+    'nombre': nombre,
+    'correo': correo,
+    'saldo_total': saldoInicial,
+    'fecha_creacion': FieldValue.serverTimestamp(),
+  });
+}
 
   // Obtener datos del estudiante
   Stream<DocumentSnapshot> obtenerEstudiante(String uid) {
