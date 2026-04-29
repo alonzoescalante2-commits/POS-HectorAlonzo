@@ -48,21 +48,17 @@ class DbService {
 
   // Obtener movimientos del estudiante
   Stream<QuerySnapshot> obtenerMovimientos(String uid) {
-    return _db
-        .collection('movimientos')
-        .where('id_estudiante', isEqualTo: uid)
-        .orderBy('fecha', descending: true)
-        .snapshots();
-  }
+  return _db
+      .collection('movimientos')
+      .where('id_estudiante', isEqualTo: uid)
+      .snapshots();
+}
 
   // Obtener gastos del mes actual
   Stream<QuerySnapshot> obtenerGastosMes(String uid) {
-    final ahora = DateTime.now();
-    final inicioMes = DateTime(ahora.year, ahora.month, 1);
-    return _db
-        .collection('movimientos')
-        .where('id_estudiante', isEqualTo: uid)
-        .where('fecha', isGreaterThanOrEqualTo: inicioMes)
-        .snapshots();
-  }
+  return _db
+      .collection('movimientos')
+      .where('id_estudiante', isEqualTo: uid)
+      .snapshots();
+}
 }

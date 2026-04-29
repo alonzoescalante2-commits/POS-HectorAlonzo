@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:inovafin/services/auth_service.dart';
 import 'package:inovafin/screens/dashboard_screen.dart';
 import 'package:inovafin/screens/register_screen.dart';
+import 'package:inovafin/screens/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -43,9 +44,9 @@ class _LoginScreenState extends State<LoginScreen> {
       _showError(error);
     } else {
       Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const DashboardScreen()),
-      );
+      context,
+      MaterialPageRoute(builder: (_) => const HomeScreen()),
+    );
     }
   }
 
