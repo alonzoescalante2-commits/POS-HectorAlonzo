@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:inovafin/services/auth_service.dart';
-import 'package:inovafin/screens/dashboard_screen.dart';
+import 'package:inovafin/screens/home_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -52,12 +52,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     final saldoInicial = double.tryParse(_saldoController.text) ?? 0.0;
 
-final error = await _authService.register(
-  _nombreController.text,
-  _emailController.text,
-  _passwordController.text,
-  saldoInicial,
-);
+    final error = await _authService.register(
+      _nombreController.text,
+      _emailController.text,
+      _passwordController.text,
+      saldoInicial,
+    );
 
     setState(() => _isLoading = false);
 
@@ -66,7 +66,7 @@ final error = await _authService.register(
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const DashboardScreen()),
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     }
   }
@@ -88,11 +88,9 @@ final error = await _authService.register(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 32.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 40),
-              // Logo
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -158,25 +156,35 @@ final error = await _authService.register(
                           : Icons.visibility,
                       color: Colors.black38,
                     ),
-                    onPressed: () {
-                      setState(() => _obscurePassword = !_obscurePassword);
-                    },
+                    onPressed: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
                   ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Confirmar contraseña
+              TextField(
+                controller: _confirmPasswordController,
+                obscureText: _obscurePassword,
+                decoration: const InputDecoration(
+                  hintText: 'Confirmar contraseña',
                 ),
               ),
               const SizedBox(height: 16),
               // Saldo inicial
               TextField(
-              controller: _saldoController,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(
-              hintText: 'Saldo inicial (\$)',
-              filled: true,
-              fillColor: const Color(0xFFF5F0E8),
-              prefixIcon: const Icon(Icons.attach_money, color: Color(0xFF29B6F6)),
-              border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
+                controller: _saldoController,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  hintText: 'Saldo inicial (\$)',
+                  filled: true,
+                  fillColor: const Color(0xFFF5F0E8),
+                  prefixIcon: const Icon(Icons.attach_money,
+                      color: Color(0xFF29B6F6)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
                   ),
                 ),
               ),
@@ -190,7 +198,6 @@ final error = await _authService.register(
                       child: const Text('Registrarse'),
                     ),
               const SizedBox(height: 16),
-              // ¿Ya tienes cuenta?
               Center(
                 child: TextButton(
                   onPressed: () => Navigator.pop(context),

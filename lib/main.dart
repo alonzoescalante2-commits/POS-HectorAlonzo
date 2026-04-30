@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:inovafin/screens/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:inovafin/screens/home_screen.dart';
+import 'package:inovafin/screens/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,7 +60,55 @@ class InovafinApp extends StatelessWidget {
           ),
         ),
       ),
-      home: LoginScreen(),
+      home: const AuthWrapper(),
+    );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        // Cargando
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            backgroundColor: Color(0xFF29B6F6),
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.account_balance,
+                      color: Colors.white, size: 64),
+                  SizedBox(height: 16),
+                  Text(
+                    'INOVAFIN',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  SizedBox(height: 32),
+                  CircularProgressIndicator(color: Colors.white),
+                ],
+              ),
+            ),
+          );
+        }
+
+        // Si hay sesión activa → Home
+        if (snapshot.hasData && snapshot.data != null) {
+          return const HomeScreen();
+        }
+
+        // Si no hay sesión → Login
+        return const LoginScreen();
+      },
     );
   }
 }

@@ -143,14 +143,71 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
               const SizedBox(height: 16),
               Center(
-                child: TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    '¿Olvidaste tu contraseña?',
-                    style: TextStyle(color: Colors.white70),
-                  ),
-                ),
+  child: TextButton(
+    onPressed: () {
+      final emailController = TextEditingController();
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: const Color(0xFFF5F0E8),
+          title: const Text(
+            'Recuperar contraseña',
+            style: TextStyle(
+              color: Color(0xFF0D47A1),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: TextField(
+            controller: emailController,
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+              hintText: 'Ingresa tu email',
+              filled: true,
+              fillColor: Colors.white,
+              prefixIcon: const Icon(Icons.email_outlined,
+                  color: Color(0xFF29B6F6)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
               ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancelar',
+                  style: TextStyle(color: Colors.black54)),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                if (emailController.text.isNotEmpty) {
+                  await _authService.resetPassword(emailController.text);
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Correo de recuperación enviado.'),
+                      backgroundColor: Color(0xFF80CBC4),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF29B6F6),
+              ),
+              child: const Text('Enviar',
+                  style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        ),
+      );
+    },
+    child: const Text(
+      '¿Olvidaste tu contraseña?',
+      style: TextStyle(color: Colors.white70),
+    ),
+  ),
+),
               Center(
                 child: TextButton(
                   onPressed: () {

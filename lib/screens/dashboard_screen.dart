@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:inovafin/services/auth_service.dart';
 import 'package:inovafin/services/db_service.dart';
 import 'package:inovafin/screens/gastos_screen.dart';
 
@@ -65,7 +64,6 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authService = AuthService();
     final dbService = DbService();
     final user = FirebaseAuth.instance.currentUser;
 
@@ -99,15 +97,6 @@ class DashboardScreen extends StatelessWidget {
             ),
           ],
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.white),
-            onPressed: () async {
-              await authService.logout();
-              Navigator.pushReplacementNamed(context, '/login');
-            },
-          ),
-        ],
       ),
       body: StreamBuilder<DocumentSnapshot>(
         stream: dbService.obtenerEstudiante(user!.uid),
@@ -138,7 +127,6 @@ class DashboardScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Saludo con nombre real
                     Text(
                       'Bienvenido, $nombre 👋',
                       style: const TextStyle(
@@ -153,7 +141,6 @@ class DashboardScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
 
-                    // Badge ACTIVA
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 6),
@@ -180,7 +167,6 @@ class DashboardScreen extends StatelessWidget {
 
                     const SizedBox(height: 20),
 
-                    // Tarjeta Gastos del mes
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(16),
@@ -224,7 +210,6 @@ class DashboardScreen extends StatelessWidget {
 
                     const SizedBox(height: 12),
 
-                    // Tarjeta Saldo disponible
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(16),
@@ -270,7 +255,6 @@ class DashboardScreen extends StatelessWidget {
 
                     const SizedBox(height: 12),
 
-                    // Última sincronización
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -286,7 +270,6 @@ class DashboardScreen extends StatelessWidget {
 
                     const Spacer(),
 
-                    // Botones
                     Row(
                       children: [
                         Expanded(
