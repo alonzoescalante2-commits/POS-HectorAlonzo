@@ -1,4 +1,4 @@
-package com.example.inovafin
+package com.inovafin.estudiantil
 
 import io.flutter.embedding.android.FlutterActivity
 

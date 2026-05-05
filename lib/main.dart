@@ -8,7 +8,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: const FirebaseOptions(
-      apiKey: "AIzaSyCfbGk8iW8b6aDdKh9Zjcp5lkIKoQpqpkU",
+      apiKey: "AIzaSyBfxTSohk9pygpkLY2gUkz8Hvk5HnNV4Io",
       authDomain: "inovafin-68212.firebaseapp.com",
       projectId: "inovafin-68212",
       storageBucket: "inovafin-68212.firebasestorage.app",

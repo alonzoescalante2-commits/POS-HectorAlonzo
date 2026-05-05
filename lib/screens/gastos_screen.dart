@@ -51,32 +51,26 @@ class _GastosScreenState extends State<GastosScreen> {
     try {
       final user = FirebaseAuth.instance.currentUser!;
 
-      // Registrar el gasto en Firestore
-      await _dbService.registrarGasto(
+      await _dbService.registrarGastoYActualizarSaldo(
         uid: user.uid,
         monto: monto,
         concepto: _conceptoController.text.trim(),
         categoria: _categoriaSeleccionada,
       );
 
-      // Obtener saldo actual y actualizar
+      // Verificar saldo bajo después de registrar
       final doc = await _dbService.obtenerEstudiante(user.uid).first;
       final data = doc.data() as Map<String, dynamic>;
-      final saldoActual = (data['saldo_total'] ?? 0).toDouble();
-      final nuevoSaldo = saldoActual - monto;
-
-      await _dbService.actualizarSaldo(user.uid, nuevoSaldo);
+      final nuevoSaldo = (data['saldo_total'] ?? 0).toDouble();
 
       setState(() => _isLoading = false);
 
-      // Verificar saldo bajo
       if (nuevoSaldo < 50) {
         _showWarning('⚠️ Saldo bajo: \$${nuevoSaldo.toStringAsFixed(2)}');
       } else {
         _showSuccess('Gasto registrado correctamente.');
       }
 
-      // Limpiar campos
       _montoController.clear();
       _conceptoController.clear();
       setState(() => _categoriaSeleccionada = 'Alimentación');
@@ -130,7 +124,6 @@ class _GastosScreenState extends State<GastosScreen> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Handle
           Center(
             child: Container(
               width: 40,
@@ -142,8 +135,6 @@ class _GastosScreenState extends State<GastosScreen> {
             ),
           ),
           const SizedBox(height: 16),
-
-          // Título
           const Text(
             'Registrar Gasto',
             style: TextStyle(
@@ -153,8 +144,6 @@ class _GastosScreenState extends State<GastosScreen> {
             ),
           ),
           const SizedBox(height: 20),
-
-          // Campo Monto
           TextField(
             controller: _montoController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -171,8 +160,6 @@ class _GastosScreenState extends State<GastosScreen> {
             ),
           ),
           const SizedBox(height: 16),
-
-          // Campo Concepto
           TextField(
             controller: _conceptoController,
             decoration: InputDecoration(
@@ -188,8 +175,6 @@ class _GastosScreenState extends State<GastosScreen> {
             ),
           ),
           const SizedBox(height: 16),
-
-          // Dropdown Categoría
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
@@ -215,8 +200,6 @@ class _GastosScreenState extends State<GastosScreen> {
             ),
           ),
           const SizedBox(height: 24),
-
-          // Botón Guardar
           SizedBox(
             width: double.infinity,
             child: _isLoading

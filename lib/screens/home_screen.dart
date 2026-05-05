@@ -13,16 +13,23 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = [
-    const DashboardScreen(),
-    const HistorialScreen(),
-    const PerfilScreen(),
-  ];
+  Widget _buildScreen() {
+  switch (_currentIndex) {
+    case 0:
+      return const DashboardScreen();
+    case 1:
+      return const HistorialScreen();
+    case 2:
+      return const PerfilScreen();
+    default:
+      return const DashboardScreen();
+  }
+}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_currentIndex],
+      body: _buildScreen(),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: Colors.white,

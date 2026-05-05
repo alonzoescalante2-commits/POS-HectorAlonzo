@@ -37,18 +37,24 @@ class AuthService {
   // Registro con email y contraseña
 Future<String?> register(String nombre, String email, String password, double saldoInicial) async {
   try {
+    print('1️⃣ Iniciando registro...');
     final resultado = await _auth.createUserWithEmailAndPassword(
       email: email.trim(),
       password: password.trim(),
     );
+    print('2️⃣ Usuario creado en Auth: ${resultado.user!.uid}');
+    
     await DbService().crearEstudiante(
       uid: resultado.user!.uid,
       nombre: nombre,
       correo: email.trim(),
       saldoInicial: saldoInicial,
     );
+    print('3️⃣ Documento creado en Firestore');
+    
     return null;
   } on FirebaseAuthException catch (e) {
+    print('❌ Error Auth: ${e.code}');
     switch (e.code) {
       case 'email-already-in-use':
         return 'Ya existe una cuenta con ese correo.';

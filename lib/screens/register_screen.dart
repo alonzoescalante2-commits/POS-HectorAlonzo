@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:inovafin/services/auth_service.dart';
-import 'package:inovafin/screens/home_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -63,11 +62,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (error != null) {
       _showError(error);
-    } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-      );
     }
   }
 
@@ -130,20 +124,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              // Nombre
               TextField(
                 controller: _nombreController,
                 decoration: const InputDecoration(hintText: 'Nombre completo'),
               ),
               const SizedBox(height: 16),
-              // Email
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(hintText: 'Email'),
               ),
               const SizedBox(height: 16),
-              // Contraseña
               TextField(
                 controller: _passwordController,
                 obscureText: _obscurePassword,
@@ -162,7 +153,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              // Confirmar contraseña
               TextField(
                 controller: _confirmPasswordController,
                 obscureText: _obscurePassword,
@@ -171,7 +161,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              // Saldo inicial
               TextField(
                 controller: _saldoController,
                 keyboardType:
@@ -189,7 +178,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              // Botón Registrar
               _isLoading
                   ? const Center(
                       child: CircularProgressIndicator(color: Colors.white))

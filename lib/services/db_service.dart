@@ -23,28 +23,34 @@ class DbService {
     return _db.collection('users').doc(uid).snapshots();
   }
 
-  // Actualizar saldo
-  Future<void> actualizarSaldo(String uid, double nuevoSaldo) async {
-    await _db.collection('users').doc(uid).update({
-      'saldo_total': nuevoSaldo,
-    });
-  }
+  Future<void> registrarGastoYActualizarSaldo({
+  required String uid,
+  required double monto,
+  required String concepto,
+  required String categoria,
+}) async {
+  await _db.runTransaction((transaction) async {
+    // 1. Leer saldo actual
+    final userRef = _db.collection('users').doc(uid);
+    final userDoc = await transaction.get(userRef);
+    final saldoActual = (userDoc.data()!['saldo_total'] ?? 0).toDouble();
 
-  // Registrar un gasto
-  Future<void> registrarGasto({
-    required String uid,
-    required double monto,
-    required String concepto,
-    required String categoria,
-  }) async {
-    await _db.collection('movimientos').add({
+    // 2. Registrar el movimiento
+    final gastoRef = _db.collection('movimientos').doc();
+    transaction.set(gastoRef, {
       'id_estudiante': uid,
       'monto': monto,
       'concepto': concepto,
       'categoria': categoria,
       'fecha': FieldValue.serverTimestamp(),
     });
-  }
+
+    // 3. Actualizar saldo atomicamente
+    transaction.update(userRef, {
+      'saldo_total': saldoActual - monto,
+    });
+  });
+}
 
   // Obtener movimientos del estudiante
   Stream<QuerySnapshot> obtenerMovimientos(String uid) {
@@ -56,9 +62,19 @@ class DbService {
 
   // Obtener gastos del mes actual
   Stream<QuerySnapshot> obtenerGastosMes(String uid) {
+  final ahora = DateTime.now();
+  final inicioMes = DateTime(ahora.year, ahora.month, 1);
+
   return _db
       .collection('movimientos')
       .where('id_estudiante', isEqualTo: uid)
+      .where('fecha', isGreaterThanOrEqualTo: Timestamp.fromDate(inicioMes))
       .snapshots();
+}
+// Actualizar saldo
+Future<void> actualizarSaldo(String uid, double nuevoSaldo) async {
+  await _db.collection('users').doc(uid).update({
+    'saldo_total': nuevoSaldo,
+  });
 }
 }
