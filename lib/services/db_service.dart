@@ -77,4 +77,69 @@ Future<void> actualizarSaldo(String uid, double nuevoSaldo) async {
     'saldo_total': nuevoSaldo,
   });
 }
+// Crear meta de ahorro
+Future<void> crearMeta({
+  required String uid,
+  required String descripcion,
+  required double montoObjetivo,
+  required DateTime fechaLimite,
+}) async {
+  await _db.collection('metas').add({
+    'id_estudiante': uid,
+    'descripcion': descripcion,
+    'monto_objetivo': montoObjetivo,
+    'monto_actual': 0.0,
+    'fecha_limite': Timestamp.fromDate(fechaLimite),
+    'fecha_creacion': FieldValue.serverTimestamp(),
+  });
+}
+
+// Obtener metas del estudiante
+Stream<QuerySnapshot> obtenerMetas(String uid) {
+  return _db
+      .collection('metas')
+      .where('id_estudiante', isEqualTo: uid)
+      .snapshots();
+}
+
+// Abonar a meta (resta del saldo también)
+Future<void> abonarMeta({
+  required String uid,
+  required String metaId,
+  required double montoAbono,
+  required double montoActual,
+  required String descripcionMeta,
+}) async {
+  await _db.runTransaction((transaction) async {
+    final userRef = _db.collection('users').doc(uid);
+    final metaRef = _db.collection('metas').doc(metaId);
+    final userDoc = await transaction.get(userRef);
+    final saldoActual = (userDoc.data()!['saldo_total'] ?? 0).toDouble();
+
+    // Registrar como movimiento
+    final gastoRef = _db.collection('movimientos').doc();
+    transaction.set(gastoRef, {
+      'id_estudiante': uid,
+      'monto': montoAbono,
+      'concepto': 'Ahorro: $descripcionMeta',
+      'categoria': 'Ahorro',
+      'fecha': FieldValue.serverTimestamp(),
+    });
+
+    // Actualizar saldo
+    transaction.update(userRef, {
+      'saldo_total': saldoActual - montoAbono,
+    });
+
+    // Actualizar monto actual de la meta
+    transaction.update(metaRef, {
+      'monto_actual': montoActual + montoAbono,
+    });
+  });
+}
+
+// Eliminar meta
+Future<void> eliminarMeta(String metaId) async {
+  await _db.collection('metas').doc(metaId).delete();
+}
 }
